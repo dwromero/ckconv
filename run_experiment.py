@@ -41,7 +41,7 @@ def main(_):
     np.random.seed(config.seed)
 
     # initialize weight and bias
-    os.environ["WANDB_API_KEY"] = "3fe624d6a1979f80f1277200966d17bed042ec31"
+    os.environ["WANDB_API_KEY"] = ""  ## Place here your API key.
     if not config.train:
         os.environ["WANDB_MODE"] = "dryrun"
     tags = [
@@ -57,7 +57,7 @@ def main(_):
         project="ckconv",
         config=copy.deepcopy(dict(config)),
         group=config.dataset,
-        entity="vu_uva_team",
+        # entity="", # Select entity if working in project with other people.
         tags=tags,
         # save_code=True,
         # job_type=config.function,
