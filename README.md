@@ -4,6 +4,9 @@ This repository contains the source code accompanying the paper:
 
  [CKConv: Continuous Kernel Convolution For Sequential Data](https://arxiv.org/abs/2102.02611)  [[Slides]](https://app.slidebean.com/p/wgp8j0zl62/CKConv-Continuous-Kernel-Convolutions-For-Sequential-Data) <br/>**[David W. Romero](https://www.davidromero.ml/), [Anna Kuzina](https://akuzina.github.io/), [Erik J. Bekkers](https://erikbekkers.bitbucket.io/), [Jakub M. Tomczak](https://jmtomczak.github.io/) & [Mark Hoogendoorn](https://www.cs.vu.nl/~mhoogen/)**.
 
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/ckconv-continuous-kernel-convolution-for/sequential-image-classification-on-sequential)](https://paperswithcode.com/sota/sequential-image-classification-on-sequential?p=ckconv-continuous-kernel-convolution-for)
+[![PWC](https://img.shields.io/endpoint.svg?url=https://paperswithcode.com/badge/ckconv-continuous-kernel-convolution-for/sequential-image-classification-on-sequential-1)](https://paperswithcode.com/sota/sequential-image-classification-on-sequential-1?p=ckconv-continuous-kernel-convolution-for)
+
 #### Abstract
 *Conventional neural architectures for sequential data present important limitations. Recurrent networks suffer from exploding
 and vanishing gradients, small effective memory horizons, and must be trained sequentially. Convolutional networks are unable to handle sequences of unknown size
