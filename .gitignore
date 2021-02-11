@@ -1,4 +1,5 @@
 .idea
 wandb
 ckernel_fitting/wandb
-data
+data/*
+!data/.gitkeep
