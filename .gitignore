@@ -2,3 +2,4 @@
 wandb
 ckernel_fitting/wandb
 data/*
+!data/.gitkeep
