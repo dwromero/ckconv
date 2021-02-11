@@ -57,7 +57,7 @@ def main(_):
         project="ckconv",
         config=copy.deepcopy(dict(config)),
         group=config.dataset,
-        # entity="", # Select entity if working in project with other people.
+        entity="vu_uva_team",
         tags=tags,
         # save_code=True,
         # job_type=config.function,
