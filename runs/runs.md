@@ -62,3 +62,49 @@ One can change the frequency of the test set by varying the key `--config.sr_tes
 
 ###### Data drop percentage = 30%
 
+`run_experiment.py --config.batch_size=32 --config.clip=0 --config.dataset=CharTrajectories --config.device=cuda --config.drop_rate=30 --config.dropout=0.2 --config.dropout_in=0 --config.epochs=200 --config.kernelnet_activation_function=Sine --config.kernelnet_no_hidden=32 --config.kernelnet_norm_type=LayerNorm --config.kernelnet_omega_0=17.243982444546685 --config.lr=0.001 --config.mfcc=True --config.model=CKCNN --config.no_blocks=2 --config.no_hidden=30 --config.optimizer=Adam --config.permuted=False --config.sched_decay_factor=5 --config.sched_decay_steps=(75,) --config.sched_patience=20 --config.scheduler=plateau --config.weight_decay=0`
+
+###### Data drop percentage = 50%
+
+`run_experiment.py --config.batch_size=32 --config.clip=0 --config.dataset=CharTrajectories --config.device=cuda --config.drop_rate=50 --config.dropout=0 --config.dropout_in=0 --config.epochs=200 --config.kernelnet_activation_function=Sine --config.kernelnet_no_hidden=32 --config.kernelnet_norm_type=LayerNorm --config.kernelnet_omega_0=11.997102427300288 --config.lr=0.001 --config.mfcc=True --config.model=CKCNN --config.no_blocks=2 --config.no_hidden=30 --config.optimizer=Adam --config.permuted=False --config.sched_decay_factor=5 --config.sched_decay_steps=(75,) --config.sched_patience=20 --config.scheduler=plateau --config.weight_decay=0.0001`
+
+###### Data drop percentage = 70%
+
+`run_experiment.py --config.batch_size=32 --config.clip=0 --config.dataset=CharTrajectories --config.device=cuda --config.drop_rate=70 --config.dropout=0.1 --config.dropout_in=0 --config.epochs=200 --config.kernelnet_activation_function=Sine --config.kernelnet_no_hidden=32 --config.kernelnet_norm_type=LayerNorm --config.kernelnet_omega_0=4.237433943113986 --config.lr=0.001 --config.mfcc=True --config.model=CKCNN --config.no_blocks=2 --config.no_hidden=30 --config.optimizer=Adam --config.permuted=False --config.sched_decay_factor=5 --config.sched_decay_steps=(75,) --config.sched_patience=20 --config.scheduler=plateau --config.weight_decay=0`
+
+### SpeechCommands (Preprocessed)
+
+`run_experiment.py --config.batch_size=64 --config.clip=0 --config.dataset=SpeechCommands --config.device=cuda --config.dropout=0.2 --config.dropout_in=0 --config.epochs=200 --config.kernelnet_activation_function=Sine --config.kernelnet_no_hidden=32 --config.kernelnet_norm_type=LayerNorm --config.kernelnet_omega_0=30.90257553169801 --config.lr=0.001 --config.mfcc=True --config.model=CKCNN --config.no_blocks=2 --config.no_hidden=30 --config.optimizer=Adam --config.permuted=False --config.sched_decay_factor=5 --config.sched_decay_steps=(75,) --config.sched_patience=15 --config.scheduler=plateau --config.weight_decay=0`
+
+### SpeechCommands (Raw)
+
+###### Sampling rate test
+One can change the frequency of the test set by varying the key `--config.sr_test`.
+
+###### Sampling rate train = 1
+
+`run_experiment.py --config.batch_size=32 --config.clip=0 --config.dataset=SpeechCommands --config.device=cuda --config.dropout=0 --config.dropout_in=0 --config.epochs=300 --config.kernelnet_activation_function=Sine --config.kernelnet_no_hidden=32 --config.kernelnet_norm_type=LayerNorm --config.kernelnet_omega_0=39.450608806633795 --config.lr=0.001 --config.mfcc=False --config.model=CKCNN --config.no_blocks=2 --config.no_hidden=30 --config.optimizer=Adam --config.permuted=False --config.sched_decay_factor=5 --config.sched_decay_steps=(75,) --config.sched_patience=20 --config.scheduler=plateau --config.sr_train=1 --config.weight_decay=0.0001 --config.weight_dropout=0`
+
+###### Sampling rate train = 1/2
+
+`run_experiment.py --config.batch_size=32 --config.clip=0 --config.dataset=SpeechCommands --config.device=cuda --config.dropout=0 --config.dropout_in=0 --config.epochs=300 --config.kernelnet_activation_function=Sine --config.kernelnet_no_hidden=32 --config.kernelnet_norm_type=LayerNorm --config.kernelnet_omega_0=39.450608806633795 --config.lr=0.001 --config.mfcc=False --config.model=CKCNN --config.no_blocks=2 --config.no_hidden=30 --config.optimizer=Adam --config.permuted=False --config.sched_decay_factor=5 --config.sched_decay_steps=(75,) --config.sched_patience=20 --config.scheduler=plateau --config.sr_train=2 --config.weight_decay=0.0001 --config.weight_dropout=0`
+
+###### Sampling rate train = 1/4
+
+`run_experiment.py --config.batch_size=32 --config.clip=0 --config.dataset=SpeechCommands --config.device=cuda --config.dropout=0 --config.dropout_in=0 --config.epochs=300 --config.kernelnet_activation_function=Sine --config.kernelnet_no_hidden=32 --config.kernelnet_norm_type=LayerNorm --config.kernelnet_omega_0=39.450608806633795 --config.lr=0.001 --config.mfcc=False --config.model=CKCNN --config.no_blocks=2 --config.no_hidden=30 --config.optimizer=Adam --config.permuted=False --config.sched_decay_factor=5 --config.sched_decay_steps=(75,) --config.sched_patience=20 --config.scheduler=plateau --config.sr_train=4 --config.weight_decay=0.0001 --config.weight_dropout=0`
+
+###### Sampling rate train = 1/8
+
+`run_experiment.py --config.batch_size=32 --config.clip=0 --config.dataset=SpeechCommands --config.device=cuda --config.dropout=0 --config.dropout_in=0 --config.epochs=300 --config.kernelnet_activation_function=Sine --config.kernelnet_no_hidden=32 --config.kernelnet_norm_type=LayerNorm --config.kernelnet_omega_0=39.450608806633795 --config.lr=0.001 --config.mfcc=False --config.model=CKCNN --config.no_blocks=2 --config.no_hidden=30 --config.optimizer=Adam --config.permuted=False --config.sched_decay_factor=5 --config.sched_decay_steps=(75,) --config.sched_patience=20 --config.scheduler=plateau --config.sr_train=8 --config.weight_decay=0.0001 --config.weight_dropout=0`
+
+###### Data drop percentage = 30%
+
+`run_experiment.py --config.batch_size=32 --config.clip=0 --config.dataset=SpeechCommands --config.device=cuda --config.drop_rate=30 --config.dropout=0.1 --config.dropout_in=0 --config.epochs=300 --config.kernelnet_activation_function=Sine --config.kernelnet_no_hidden=32 --config.kernelnet_norm_type=LayerNorm --config.kernelnet_omega_0=35.655229877794035 --config.lr=0.001 --config.mfcc=False --config.model=CKCNN --config.no_blocks=2 --config.no_hidden=30 --config.optimizer=Adam --config.permuted=False --config.sched_decay_factor=5 --config.sched_decay_steps=(75,) --config.sched_patience=20 --config.scheduler=plateau --config.sr_train=1 --config.weight_decay=0.0001 --config.weight_dropout=0`
+
+###### Data drop percentage = 50%
+
+`run_experiment.py --config.batch_size=32 --config.clip=0 --config.dataset=SpeechCommands --config.device=cuda --config.drop_rate=50 --config.dropout=0 --config.dropout_in=0 --config.epochs=300 --config.kernelnet_activation_function=Sine --config.kernelnet_no_hidden=32 --config.kernelnet_norm_type=LayerNorm --config.kernelnet_omega_0=31.700745675276966 --config.lr=0.001 --config.mfcc=False --config.model=CKCNN --config.no_blocks=2 --config.no_hidden=30 --config.optimizer=Adam --config.permuted=False --config.sched_decay_factor=5 --config.sched_decay_steps=(75,) --config.sched_patience=20 --config.scheduler=plateau --config.sr_train=1 --config.weight_decay=0.0001 --config.weight_dropout=0`
+
+###### Data drop percentage = 70%
+
+`run_experiment.py --config.batch_size=32 --config.clip=0 --config.dataset=SpeechCommands --config.device=cuda --config.drop_rate=70 --config.dropout=0.1 --config.dropout_in=0.1 --config.epochs=300 --config.kernelnet_activation_function=Sine --config.kernelnet_no_hidden=32 --config.kernelnet_norm_type=LayerNorm --config.kernelnet_omega_0=23.29255834358289 --config.lr=0.001 --config.mfcc=False --config.model=CKCNN --config.no_blocks=2 --config.no_hidden=30 --config.optimizer=Adam --config.permuted=False --config.sched_decay_factor=5 --config.sched_decay_steps=(75,) --config.sched_patience=20 --config.scheduler=plateau --config.sr_train=1 --config.weight_decay=0 --config.weight_dropout=0.1`
