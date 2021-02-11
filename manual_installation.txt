@@ -6,4 +6,5 @@ conda install -c conda-forge notebook
 conda install -c conda-forge jupyterlab
 conda install -c conda-forge wandb
 pip install ml-collections
+pip install sktime
 conda install -c anaconda scikit-learn

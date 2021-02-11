@@ -44,7 +44,7 @@ This repository is organized as follows:
 ###### conda *(recommended)*
 In order to reproduce our results, please first install the required dependencies. This can be done by:
 ```
-conda create --name ckconv --file conda_requirements.txt
+conda env create -f conda_requirements.txt
 ```
 This will create the conda environment `ckconv` with the correct dependencies.
 
@@ -56,6 +56,9 @@ conda install pytorch==1.7.0 torchvision==0.8.1 torchaudio=0.7.0 cudatoolkit=10.
 conda activate ckconv
 pip install -r requirements.txt
 ```
+
+###### manual installation
+If you prefer to construct the conda environment manually, please follow the commands speficiend in `manual_installation.txt`
 
 #### Experiments and `config` files
 To reproduce the experiments in the paper, please follow the configurations given in the file `runs/my_experiment.sh`
