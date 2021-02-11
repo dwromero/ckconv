@@ -1,0 +1,9 @@
+conda create -n ckconv python=3.7
+conda activate ckconv
+conda install pytorch torchvision torchaudio cudatoolkit=10.1 -c pytorch
+conda install -c conda-forge matplotlib
+conda install -c conda-forge notebook
+conda install -c conda-forge jupyterlab
+conda install -c conda-forge wandb
+pip install ml-collections
+conda install -c anaconda scikit-learn

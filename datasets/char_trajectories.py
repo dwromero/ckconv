@@ -55,7 +55,7 @@ class CharTrajectories(torch.utils.data.TensorDataset):
         super(CharTrajectories, self).__init__(X, y)
 
     def download(self):
-        root = self.rootd
+        root = self.root
         base_loc = root / "UEA"
         loc = base_loc / "Multivariate2018_ts.zip"
         if os.path.exists(loc):
