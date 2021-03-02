@@ -27,6 +27,8 @@ This repository is organized as follows:
 
 * `ckconv` contains the main PyTorch library of our model.
 
+* `datasets` implements `Dataset` wrappers for the datasets used.
+
 * `ckernel_fitting` contains source code to run experiments to approximate convolutional filters via MLPs. Please see `ckernel_fitting/README.md` for further details. 
 
 * `demo` provides some minimalistic examples on the usage of CKConvs and the construction of CKCNNs. 
@@ -35,7 +37,9 @@ This repository is organized as follows:
 
 * `probspec_routines` contains routines specific to some of the problems considered in this paper.
   
-* `runs` contains the `.sh` files with the corresponding arguments used to run our experiments. 
+* `runs` contains the command lines used to obtain the results reported in our experiments. 
+
+* `saved` contains various pretrained models. 
 
 ### Reproduce
 
@@ -52,8 +56,8 @@ This will create the conda environment `ckconv` with the correct dependencies.
 The same conda environment can be created with `pip` by running:
 ```
 conda create -n ckconv python=3.7
-conda install pytorch==1.7.0 torchvision==0.8.1 torchaudio=0.7.0 cudatoolkit=10.1 -c pytorch
 conda activate ckconv
+conda install pytorch==1.7.0 torchvision==0.8.1 torchaudio=0.7.0 cudatoolkit=10.1 -c pytorch
 pip install -r requirements.txt
 ```
 
@@ -61,12 +65,12 @@ pip install -r requirements.txt
 If you prefer to construct the conda environment manually, please follow the commands speficiend in `manual_installation.txt`
 
 #### Experiments and `config` files
-To reproduce the experiments in the paper, please follow the configurations given in the file `runs/my_experiment.sh`
+To reproduce the experiments in the paper, please follow the configurations given in `runs/README.md`
 
-Specifications on the parameters specified via the `argsparser` can be found in the corresponding `config.py` files.
+Specifications on the parameters specified via the `argsparser` can be found in the corresponding `config.py` file.
 
 #### Pretrained models
-To use pretrained models, please add the argument `--config.pretrained==True` to the corresponding execution `.sh` file.
+To use pretrained models, please add the argument `--config.pretrained=True` to the corresponding execution line.
 
 #### Recommendations and details
 
