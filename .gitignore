@@ -1,4 +1,5 @@
 .idea
+*.pyc
 wandb
 ckernel_fitting/wandb
 data/*
