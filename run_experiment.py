@@ -67,10 +67,12 @@ def main(_):
     config["device"] = (
         "cuda:0" if (config.device == "cuda" and torch.cuda.is_available()) else "cpu"
     )
-    model = get_model(config)
 
     # Define transforms and create dataloaders
     dataloaders, test_loader = dataset.get_dataset(config, num_workers=4)
+
+    # Define model
+    model = get_model(config)
 
     # WandB – wandb.watch() automatically fetches all layer dimensions, gradients, model parameters and logs them automatically to your dashboard.
     # Using log="all" log histograms of parameter values in addition to gradients

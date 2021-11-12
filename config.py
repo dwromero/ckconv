@@ -63,6 +63,8 @@ def get_config():
         path="",
         # This parameter is automatically derived from the other parameters of the run. It specifies
         # the path where the network parameters will be saved / loaded from.
+        report_auc=False,
+        max_epochs_no_improvement=100,
         # --------------------------
         # Parameters of TCNs / BFCNNs
         cnn_kernel_size=0,

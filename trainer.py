@@ -15,6 +15,8 @@ import probspec_routines as ps_routines
 from tester import test
 import ckconv
 
+import sklearn
+
 
 def train(model, dataloaders, config, test_loader):
 
@@ -25,6 +27,7 @@ def train(model, dataloaders, config, test_loader):
         "CIFAR10": torch.nn.CrossEntropyLoss(),
         "SpeechCommands": torch.nn.CrossEntropyLoss(),
         "CharTrajectories": torch.nn.CrossEntropyLoss(),
+        "PhysioNet": torch.nn.CrossEntropyLoss(),
     }[config.dataset]
 
     train_function = {
@@ -34,6 +37,7 @@ def train(model, dataloaders, config, test_loader):
         "CIFAR10": _train_classif,
         "SpeechCommands": _train_classif,
         "CharTrajectories": _train_classif,
+        "PhysioNet": _train_classif,
     }[config.dataset]
 
     # Define optimizer and scheduler
@@ -135,6 +139,11 @@ def _train_classif(
     best_model_wts = copy.deepcopy(model.state_dict())
     best_acc = 0.0
     best_loss = 999
+
+    # Counter for epochs without improvement
+    epochs_no_improvement = 0
+    max_epochs_no_improvement = config.max_epochs_no_improvement
+
     # iterate over epochs
     for epoch in range(epochs):
         print("Epoch {}/{}".format(epoch + 1, epochs))
@@ -157,6 +166,10 @@ def _train_classif(
             running_loss = 0
             running_corrects = 0
             total = 0
+
+            true_y_cpus = []
+            pred_y_cpus = []
+
             # iterate over data
             for inputs, labels in dataloader[phase]:
 
@@ -175,12 +188,19 @@ def _train_classif(
                     # FwrdPhase:
                     inputs = torch.dropout(inputs, config.dropout_in, train)
                     outputs = model(inputs)
+
                     loss = criterion(outputs, labels)
                     # Regularization:
                     if config.weight_decay != 0.0:
                         loss = loss + weight_regularizer(model)
 
                     _, preds = torch.max(outputs, 1)
+
+                    # Save for AUC
+                    if config.report_auc:
+                        true_y_cpus.append(labels.detach().cpu())
+                        pred_y_cpus.append(preds.detach().cpu())
+
                     # BwrdPhase:
                     if phase == "train":
                         loss.backward()
@@ -207,6 +227,19 @@ def _train_classif(
                 step=epoch + 1,
             )
 
+            if config.report_auc:
+                true_y_cpus = torch.cat(true_y_cpus, dim=0)
+                pred_y_cpus = torch.cat(pred_y_cpus, dim=0)
+
+                auc = sklearn.metrics.roc_auc_score(true_y_cpus, pred_y_cpus)
+
+                print(f"AUC: {auc}")
+
+                wandb.log(
+                    {f"auc_{phase}": auc},
+                    step=epoch+1,
+                )
+
             # If better validation accuracy, replace best weights and compute the test performance
             if phase == "validation" and epoch_acc >= best_acc:
 
@@ -227,12 +260,24 @@ def _train_classif(
                     del inputs, outputs, labels
                     torch.cuda.empty_cache()
                     # Perform test and log results
-                    if config.dataset in ["SpeechCommands", "CharTrajectories"]:
-                        test_acc = test(model, test_loader, config)
+                    if config.dataset in ["SpeechCommands", "CharTrajectories", "PhysioNet"]:
+                        test_acc, test_auc = test(model, test_loader, config)
                     else:
                         test_acc = best_acc
                     wandb.run.summary["best_test_accuracy"] = test_acc
                     wandb.log({"accuracy_test": test_acc}, step=epoch + 1)
+
+                    if config.report_auc:
+                        wandb.run.summary["best_test_auc"] = test_auc
+                        wandb.log({"test_auc": test_auc}, step=epoch + 1)
+
+                    # Reset counter of epochs without progress
+                    epochs_no_improvement = 0
+
+            elif phase == "validation" and epoch_acc < best_acc:
+                # Otherwise, increase counter
+                epochs_no_improvement += 1
+
 
             # Update scheduler
             if (
@@ -245,6 +290,13 @@ def _train_classif(
         if isinstance(lr_scheduler, torch.optim.lr_scheduler.MultiStepLR):
             lr_scheduler.step()
         print()
+
+        #  Check how many epochs without improvement have passed, and, if required, stop training.
+        if epochs_no_improvement == max_epochs_no_improvement:
+            print(
+                f"Stopping training due to {epochs_no_improvement} epochs of no improvement in validation accuracy."
+            )
+            break
 
     # Report best results
     print("Best Val Acc: {:.4f}".format(best_acc))

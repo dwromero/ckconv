@@ -6,6 +6,7 @@ from datasets import (
     CIFAR10,
     SpeechCommands,
     CharTrajectories,
+    PhysioNet,
 )
 
 import ml_collections
@@ -28,6 +29,7 @@ def dataset_constructor(
         "CIFAR10": CIFAR10,
         "SpeechCommands": SpeechCommands,
         "CharTrajectories": CharTrajectories,
+        "PhysioNet": PhysioNet,
     }[config.dataset]
 
     training_set = dataset(
@@ -48,7 +50,7 @@ def dataset_constructor(
         else config.sr_test,  # Test set can be sample differently.
         dropped_rate=config.drop_rate,
     )
-    if config.dataset in ["SpeechCommands", "CharTrajectories"]:
+    if config.dataset in ["SpeechCommands", "CharTrajectories", "PhysioNet"]:
         validation_set = dataset(
             partition="val",
             seq_length=config.seq_length,

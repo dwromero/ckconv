@@ -9,4 +9,5 @@ from .speech_commands import (
     load_data,
     save_data,
 )
+from .physionet import PhysioNet
 from .char_trajectories import CharTrajectories

@@ -22,6 +22,8 @@ def get_model(config):
             in_channels = 20
         else:
             in_channels = 1
+    elif config.dataset in ["PhysioNet"]:
+        in_channels = 75
     else:
         raise NotImplementedError("Dataset {} not found.".format(config.dataset))
 
@@ -139,6 +141,21 @@ def get_model(config):
         "SpeechCommands_CKCNN": lambda: models.seqImg_CKCNN(
             in_channels=in_channels,
             out_channels=10,
+            hidden_channels=config.no_hidden,
+            num_blocks=config.no_blocks,
+            kernelnet_hidden_channels=config.kernelnet_no_hidden,
+            kernelnet_activation_function=config.kernelnet_activation_function,
+            kernelnet_norm_type=config.kernelnet_norm_type,
+            dim_linear=1,
+            bias=True,
+            omega_0=config.kernelnet_omega_0,
+            dropout=config.dropout,
+            weight_dropout=config.weight_dropout,
+            pool=config.pool,
+        ),
+        "PhysioNet_CKCNN": lambda: models.seqImg_CKCNN(
+            in_channels=in_channels,
+            out_channels=2,
             hidden_channels=config.no_hidden,
             num_blocks=config.no_blocks,
             kernelnet_hidden_channels=config.kernelnet_no_hidden,
