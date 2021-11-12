@@ -231,13 +231,13 @@ def _train_classif(
                 true_y_cpus = torch.cat(true_y_cpus, dim=0)
                 pred_y_cpus = torch.cat(pred_y_cpus, dim=0)
 
-                auc = sklearn.metrics.roc_auc_score(true_y_cpus, pred_y_cpus)
+                epoch_auc = sklearn.metrics.roc_auc_score(true_y_cpus, pred_y_cpus)
 
-                print(f"AUC: {auc}")
+                print(f"AUC: {epoch_auc}")
 
                 wandb.log(
-                    {f"auc_{phase}": auc},
-                    step=epoch+1,
+                    {f"auc_{phase}": epoch_auc},
+                    step=epoch + 1,
                 )
 
             # If better validation accuracy, replace best weights and compute the test performance
@@ -260,7 +260,11 @@ def _train_classif(
                     del inputs, outputs, labels
                     torch.cuda.empty_cache()
                     # Perform test and log results
-                    if config.dataset in ["SpeechCommands", "CharTrajectories", "PhysioNet"]:
+                    if config.dataset in [
+                        "SpeechCommands",
+                        "CharTrajectories",
+                        "PhysioNet",
+                    ]:
                         test_acc, test_auc = test(model, test_loader, config)
                     else:
                         test_acc = best_acc
@@ -268,6 +272,7 @@ def _train_classif(
                     wandb.log({"accuracy_test": test_acc}, step=epoch + 1)
 
                     if config.report_auc:
+                        wandb.run.summary["best_val_auc"] = epoch_auc
                         wandb.run.summary["best_test_auc"] = test_auc
                         wandb.log({"test_auc": test_auc}, step=epoch + 1)
 
@@ -277,7 +282,6 @@ def _train_classif(
             elif phase == "validation" and epoch_acc < best_acc:
                 # Otherwise, increase counter
                 epochs_no_improvement += 1
-
 
             # Update scheduler
             if (
