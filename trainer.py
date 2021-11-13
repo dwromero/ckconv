@@ -191,7 +191,7 @@ def _train_classif(
 
                     if len(outputs.shape) == 1:
                         labels = labels.float()
-                        preds = (torch.sigmoid(outputs) > 0.5).int()
+                        preds = (outputs > 0.0).int()
                     else:
                         _, preds = torch.max(outputs, 1)
 

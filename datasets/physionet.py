@@ -44,50 +44,64 @@ class PhysioNet(torch.utils.data.TensorDataset):
 
         super(PhysioNet, self).__init__(X, y)
 
-
     def download(self):
-        loc_Azip = self.base_loc / 'training_setA.zip'
-        loc_Bzip = self.base_loc / 'training_setB.zip'
+        loc_Azip = self.base_loc / "training_setA.zip"
+        loc_Bzip = self.base_loc / "training_setB.zip"
 
         if not os.path.exists(loc_Azip):
             if not os.path.exists(self.base_loc):
                 os.mkdir(self.base_loc)
-            urllib.request.urlretrieve('https://archive.physionet.org/users/shared/challenge-2019/training_setA.zip',
-                                       str(loc_Azip))
-            urllib.request.urlretrieve('https://archive.physionet.org/users/shared/challenge-2019/training_setB.zip',
-                                       str(loc_Bzip))
+            urllib.request.urlretrieve(
+                "https://archive.physionet.org/users/shared/challenge-2019/training_setA.zip",
+                str(loc_Azip),
+            )
+            urllib.request.urlretrieve(
+                "https://archive.physionet.org/users/shared/challenge-2019/training_setB.zip",
+                str(loc_Bzip),
+            )
 
-            with zipfile.ZipFile(loc_Azip, 'r') as f:
+            with zipfile.ZipFile(loc_Azip, "r") as f:
                 f.extractall(str(self.base_loc))
-            with zipfile.ZipFile(loc_Bzip, 'r') as f:
+            with zipfile.ZipFile(loc_Bzip, "r") as f:
                 f.extractall(str(self.base_loc))
-            for folder in ('training', 'training_setB'):
+            for folder in ("training", "training_setB"):
                 for filename in os.listdir(self.base_loc / folder):
                     if os.path.exists(self.base_loc / filename):
                         raise RuntimeError
-                    os.rename(self.base_loc / folder / filename, self.base_loc / filename)
+                    os.rename(
+                        self.base_loc / folder / filename, self.base_loc / filename
+                    )
 
     def _process_data(self):
         X_times = []
         X_static = []
         y = []
         for filename in os.listdir(self.base_loc):
-            if filename.endswith('.psv'):
+            if filename.endswith(".psv"):
                 with open(self.base_loc / filename) as file:
                     time = []
                     label = 0.0
-                    reader = csv.reader(file, delimiter='|')
+                    reader = csv.reader(file, delimiter="|")
                     reader = iter(reader)
                     next(reader)  # first line is headings
                     prev_iculos = 0
                     for line in reader:
                         assert len(line) == 41
-                        *time_values, age, gender, unit1, unit2, hospadmtime, iculos, sepsislabel = line
+                        (
+                            *time_values,
+                            age,
+                            gender,
+                            unit1,
+                            unit2,
+                            hospadmtime,
+                            iculos,
+                            sepsislabel,
+                        ) = line
                         iculos = int(iculos)
                         if iculos > 72:  # keep at most the first three days
                             break
                         for iculos_ in range(prev_iculos + 1, iculos):
-                            time.append([float('nan') for value in time_values])
+                            time.append([float("nan") for value in time_values])
                         prev_iculos = iculos
                         time.append([float(value) for value in time_values])
                         label = max(label, float(sepsislabel))
@@ -96,12 +110,12 @@ class PhysioNet(torch.utils.data.TensorDataset):
                     unit1_obs = not math.isnan(unit1)
                     unit2_obs = not math.isnan(unit2)
                     if not unit1_obs:
-                        unit1 = 0.
+                        unit1 = 0.0
                     if not unit2_obs:
-                        unit2 = 0.
+                        unit2 = 0.0
                     hospadmtime = float(hospadmtime)
                     if math.isnan(hospadmtime):
-                        hospadmtime = 0.  # this only happens for one record
+                        hospadmtime = 0.0  # this only happens for one record
                     static = [float(age), float(gender), unit1, unit2, hospadmtime]
                     static += [unit1_obs, unit2_obs]
                     if len(time) > 2:
@@ -114,7 +128,7 @@ class PhysioNet(torch.utils.data.TensorDataset):
         maxlen = max(final_indices) + 1
         for time in X_times:
             for _ in range(maxlen - len(time)):
-                time.append([float('nan') for value in time_values])
+                time.append([float("nan") for value in time_values])
 
         X_times = torch.tensor(X_times)
         X_static = torch.tensor(X_static)
@@ -133,19 +147,23 @@ class PhysioNet(torch.utils.data.TensorDataset):
 
         X_times = torch.where(~torch.isnan(X_times), X_times, torch.Tensor([0.0]))
 
-        train_X_times, val_X_times, test_X = split_data(X_times, y)
+        train_X_times, val_X_times, test_X_times = split_data(X_times, y)
         train_y, val_y, test_y = split_data(y, y)
 
         X_static_ = X_static[:, :-2]
         X_static_ = normalise_data(X_static_, y)
-        X_static = torch.cat([X_static_, X_static[:, -2:]], dim=1).unsqueeze(1).repeat(1, X_times.shape[1], 1)
+        X_static = (
+            torch.cat([X_static_, X_static[:, -2:]], dim=1)
+            .unsqueeze(1)
+            .repeat(1, X_times.shape[1], 1)
+        )
 
         train_X_static, val_X_static, test_X_static = split_data(X_static, y)
 
         # Concatenate
-        train_X = torch.cat([train_X_times,  train_X_static], dim=-1).transpose(-2, -1)
+        train_X = torch.cat([train_X_times, train_X_static], dim=-1).transpose(-2, -1)
         val_X = torch.cat([val_X_times, val_X_static], dim=-1).transpose(-2, -1)
-        test_X = torch.cat([val_X_times, val_X_static], dim=-1).transpose(-2, -1)
+        test_X = torch.cat([test_X_times, test_X_static], dim=-1).transpose(-2, -1)
 
         return (
             train_X,
@@ -173,10 +191,3 @@ class PhysioNet(torch.utils.data.TensorDataset):
             raise NotImplementedError("the set {} is not implemented.".format(set))
 
         return X, y
-
-
-
-
-
-
-

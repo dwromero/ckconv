@@ -58,7 +58,7 @@ def _test_classif(model, test_loader, config):
 
             if len(outputs.shape) == 1:
                 labels = labels.float()
-                preds = (torch.sigmoid(outputs) > 0.5).int()
+                preds = (outputs > 0.0).int()
             else:
                 _, preds = torch.max(outputs, 1)
 
