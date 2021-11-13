@@ -155,7 +155,7 @@ def get_model(config):
         ),
         "PhysioNet_CKCNN": lambda: models.seqImg_CKCNN(
             in_channels=in_channels,
-            out_channels=2,
+            out_channels=1,
             hidden_channels=config.no_hidden,
             num_blocks=config.no_blocks,
             kernelnet_hidden_channels=config.kernelnet_no_hidden,

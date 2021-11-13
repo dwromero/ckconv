@@ -39,7 +39,7 @@ def _gaussian(config, x):
 def _constant(config, x):
     # apply function
     f = np.ones_like(x)
-    # f[:int(len(f)/2)] = -1.0
+    f[int(len(f) / 2) :] = -1.0
     # return
     return f
 

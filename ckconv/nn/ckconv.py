@@ -6,6 +6,69 @@ from ckconv.nn.misc import Multiply
 import numpy as np
 import ckconv.nn.functional as ckconv_f
 from torch.nn.utils import weight_norm
+import math
+
+
+class RFNet(torch.nn.Module):
+    def __init__(
+        self,
+        in_channels: int,
+        out_channels: int,
+        hidden_channels: int,
+        activation_function: str,
+        norm_type: str,
+        dim_linear: int,
+        bias: bool,
+        omega_0: float,
+        weight_dropout: float,
+    ):
+        super().__init__()
+
+        ActivationFunction = torch.nn.ReLU
+        Linear = {1: ckconv.nn.Linear1d, 2: ckconv.nn.Linear2d}[dim_linear]
+
+        self.kernel_net = torch.nn.Sequential(
+            InputMapping(
+                in_channels,
+                hidden_channels // 2,
+                omega_0=omega_0,
+                bias=True,
+            ),
+            Linear(hidden_channels, hidden_channels, bias=bias),
+            ActivationFunction(),
+            Linear(hidden_channels, out_channels, bias=bias),
+        )
+
+    def forward(self, x):
+        return self.kernel_net(x)
+
+
+class InputMapping(torch.nn.Conv1d):
+    def __init__(
+        self,
+        in_channels: int,
+        out_channels: int,
+        omega_0: float,
+        stride: int = 1,
+        bias: bool = True,
+    ):
+        super().__init__(
+            in_channels=in_channels,
+            out_channels=out_channels,
+            kernel_size=1,
+            stride=stride,
+            padding=0,
+            bias=bias,
+        )
+        self.omega_0 = omega_0
+
+        # Initialize:
+        self.weight.data.normal_(0.0, 2 * math.pi * self.omega_0)
+
+    def forward(self, x):
+        out = super().forward(x)
+        out = torch.cat([torch.cos(out), torch.sin(out)], dim=1)
+        return out
 
 
 class KernelNet(torch.nn.Module):

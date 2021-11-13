@@ -39,6 +39,7 @@ def get_config():
         # Parameters of SIREN
         kernelnet_omega_0=0.0,
         # If model == CKCNN, kernelnet_activation_function==Sine, the value of the omega_0 parameter, e.g., 30.
+        kernelnet_type="",
         comment="",
         # An additional comment to be added to the config.path parameter specifying where
         # the network parameters will be saved / loaded from.

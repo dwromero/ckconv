@@ -55,15 +55,20 @@ def _test_classif(model, test_loader, config):
                     inputs = inputs[:, :, permutation]
 
             outputs = model(inputs)
-            _, predicted = torch.max(outputs.data, 1)
+
+            if len(outputs.shape) == 1:
+                labels = labels.float()
+                preds = (torch.sigmoid(outputs) > 0.5).int()
+            else:
+                _, preds = torch.max(outputs, 1)
 
             total += labels.size(0)
-            correct += (predicted == labels).sum().item()
+            correct += (preds == labels).sum().item()
 
             # Save for AUC
             if config.report_auc:
                 true_y_cpus.append(labels.detach().cpu())
-                pred_y_cpus.append(predicted.detach().cpu())
+                pred_y_cpus.append(outputs.detach().cpu())
 
     # Print results
     test_acc = correct / total

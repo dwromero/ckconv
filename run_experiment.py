@@ -41,7 +41,6 @@ def main(_):
     np.random.seed(config.seed)
 
     # initialize weight and bias
-    os.environ["WANDB_API_KEY"] = ""  ## Place here your API key.
     if not config.train:
         os.environ["WANDB_MODE"] = "dryrun"
     tags = [

@@ -180,4 +180,6 @@ class seqImg_CKCNN(CKCNN):
     def forward(self, x):
         out = self.backbone(x)
         out = self.finallyr(out[:, :, -1])
+        if out.shape[-1] == 1:
+            out = out.squeeze(-1)
         return out

@@ -27,7 +27,7 @@ def train(model, dataloaders, config, test_loader):
         "CIFAR10": torch.nn.CrossEntropyLoss(),
         "SpeechCommands": torch.nn.CrossEntropyLoss(),
         "CharTrajectories": torch.nn.CrossEntropyLoss(),
-        "PhysioNet": torch.nn.CrossEntropyLoss(),
+        "PhysioNet": torch.nn.BCEWithLogitsLoss(),
     }[config.dataset]
 
     train_function = {
@@ -189,17 +189,21 @@ def _train_classif(
                     inputs = torch.dropout(inputs, config.dropout_in, train)
                     outputs = model(inputs)
 
+                    if len(outputs.shape) == 1:
+                        labels = labels.float()
+                        preds = (torch.sigmoid(outputs) > 0.5).int()
+                    else:
+                        _, preds = torch.max(outputs, 1)
+
                     loss = criterion(outputs, labels)
                     # Regularization:
                     if config.weight_decay != 0.0:
                         loss = loss + weight_regularizer(model)
 
-                    _, preds = torch.max(outputs, 1)
-
                     # Save for AUC
                     if config.report_auc:
                         true_y_cpus.append(labels.detach().cpu())
-                        pred_y_cpus.append(preds.detach().cpu())
+                        pred_y_cpus.append(outputs.detach().cpu())
 
                     # BwrdPhase:
                     if phase == "train":

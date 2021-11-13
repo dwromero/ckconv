@@ -46,14 +46,13 @@ def main(_):
     np.random.seed(config.seed)
 
     # initialize weight and bias
-    os.environ["WANDB_API_KEY"] = "3fe624d6a1979f80f1277200966d17bed042ec31"
     wandb.init(
         project="ckconv",
         config=copy.deepcopy(dict(config)),
         group="kernelfit_{}".format(config.function),
         entity="vu_uva_team",
         tags=["kernelfit", config.function],
-        save_code=True,
+        # save_code=True,
         # job_type=config.function,
     )
 
@@ -152,7 +151,14 @@ def main(_):
 
 def get_model(config):
     # Load the model: The model is always equal to a continuous kernel
-    model = ckconv.nn.KernelNet(
+    if config.kernelnet_type == "SIREN":
+        model_type = ckconv.nn.KernelNet
+    elif config.kernelnet_type == "RFNet":
+        model_type = ckconv.nn.RFNet
+    else:
+        raise NotImplementedError(f"{config.kernelnet_type}")
+
+    model = model_type(
         in_channels=1,
         out_channels=1,
         hidden_channels=config.kernelnet_no_hidden,
