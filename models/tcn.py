@@ -194,3 +194,38 @@ class MNIST_TCN(nn.Module):
     def forward(self, x):
         y1 = self.tcn(x)
         return self.linear(y1[:, :, -1])
+
+
+class PTB_TCN(nn.Module):
+    def __init__(self, input_size,
+                 output_size,
+                 num_channels,
+                 kernel_size,
+                 dropout,
+                 emb_dropout=0.1,
+                 tied_weights=True):
+        super(PTB_TCN, self).__init__()
+        self.encoder = nn.Embedding(output_size, input_size)
+        self.tcn = TemporalConvNet(input_size, num_channels, kernel_size, dropout=dropout)
+
+        self.linear = nn.Linear(num_channels[-1], output_size)
+        if tied_weights:
+            if num_channels[-1] != input_size:
+                raise ValueError('When using the tied flag, nhid must be equal to emsize')
+            self.linear.weight = self.encoder.weight
+            print("Weight tied")
+        self.drop = nn.Dropout(emb_dropout)
+        self.init_weights()
+
+    def init_weights(self):
+        self.encoder.weight.data.normal_(0, 0.01)
+        self.linear.weight.data.normal_(0, 0.01)
+        self.linear.bias.data.fill_(0)
+
+    def forward(self, x, return_emb=False):
+        emb = self.drop(self.encoder(x)).transpose(1, 2)  # MB x emb_size x seq_len
+        y1 = self.tcn(emb)  # MB x n_ch x seq_len
+        out = self.linear(y1.transpose(1, 2))  # MB x seq_len x voc_size
+        if return_emb:
+            return out, y1.transpose(1, 2)
+        return out

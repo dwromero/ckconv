@@ -64,6 +64,8 @@ def get_config():
         # This parameter is automatically derived from the other parameters of the run. It specifies
         # the path where the network parameters will be saved / loaded from.
         report_auc=False,
+        report_ppl=False,
+        report_bpc=False,
         max_epochs_no_improvement=100,
         # --------------------------
         # Parameters of TCNs / BFCNNs
@@ -81,6 +83,12 @@ def get_config():
         # kernels. e.g., 32.
         pool=False,  # **Not used in our experiments -> Worse performance.**
         # If True, it adds a max pool layer after each Residual Block.
+        emb_dropout=0.,
+        # Embeding dropout for PennTreeBank dataset
+        emb_size=0,
+        # Size of the embedding
+        tied_weights=True,
+        # If true - use the same weight matrix for encoder and decoder
         # --------------------------
         # Parameters of SIREN
         kernelnet_omega_0=0.0,
@@ -109,6 +117,8 @@ def get_config():
         drop_rate=0,
         # Specifies the rate at which data will be droped from the original dataset. Used for experiments
         # With missing data. e.g., 30, 50, 70.
+        # 6. PennTreeBank: valid sequence length. Seq_len = effective history + valid sequence length (only second part used for traning)
+        valid_seq_len=0,
     )
     default_config = ml_collections.ConfigDict(default_config)
     return default_config

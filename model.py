@@ -24,6 +24,8 @@ def get_model(config):
             in_channels = 1
     elif config.dataset in ["PhysioNet"]:
         in_channels = 75
+    elif config.dataset in ["PennTreeBankChar"]:
+        in_channels = config.emb_size
     else:
         raise NotImplementedError("Dataset {} not found.".format(config.dataset))
 
@@ -79,6 +81,15 @@ def get_model(config):
             num_channels=[config.no_hidden] * config.no_blocks,
             kernel_size=config.cnn_kernel_size,
             dropout=config.dropout,
+        ),
+        "PennTreeBankChar_TCN": lambda: models.PTB_TCN(
+            input_size=config.emb_size,
+            output_size=config.vocab_size,
+            num_channels=[config.no_hidden] * (config.no_blocks-1) + [config.emb_size],
+            kernel_size=config.cnn_kernel_size,
+            dropout=config.dropout,
+            emb_dropout=config.emb_dropout,
+            tied_weights=config.tied_weights,
         ),
         "AddProblem_CKCNN": lambda: models.AddProblem_CKCNN(
             in_channels=in_channels,
@@ -168,6 +179,23 @@ def get_model(config):
             weight_dropout=config.weight_dropout,
             pool=config.pool,
         ),
+        "PennTreeBankChar_CKCNN": lambda: models.seqText_CKCNN(
+            in_channels=in_channels,
+            out_channels=config.vocab_size,
+            hidden_channels=config.no_hidden,
+            num_blocks=config.no_blocks,
+            kernelnet_hidden_channels=config.kernelnet_no_hidden,
+            kernelnet_activation_function=config.kernelnet_activation_function,
+            kernelnet_norm_type=config.kernelnet_norm_type,
+            dim_linear=1,
+            bias=True,
+            omega_0=config.kernelnet_omega_0,
+            dropout=config.dropout,
+            weight_dropout=config.weight_dropout,
+            pool=config.pool,
+            emb_dropout=config.emb_dropout,
+            tied_weights=config.tied_weights
+        ),
         "CharTrajectories_CKCNN": lambda: models.seqImg_CKCNN(
             in_channels=in_channels,
             out_channels=20,
@@ -187,7 +215,7 @@ def get_model(config):
 
     # print number parameters
     print("Number of parameters:", ckconv.utils.num_params(model))
-    # wandb.run.summary["no_params"] = ckconv.utils.num_params(model)
+    wandb.run.summary["no_params"] = ckconv.utils.num_params(model)
 
     # Check if multi-GPU available and if so, use the available GPU's
     print("GPU's available:", torch.cuda.device_count())
