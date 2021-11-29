@@ -243,17 +243,30 @@ class CKConv(torch.nn.Module):
         :param weight_dropout: Dropout rate applied to the sampled convolutional kernels.
         """
         super().__init__()
-        self.Kernel = KernelNet(
-            dim_linear,
-            out_channels * in_channels,
-            hidden_channels,
-            activation_function,
-            norm_type,
-            dim_linear,
-            bias,
-            omega_0,
-            weight_dropout,
-        )
+        if activation_function == "RandomFourier":
+            self.Kernel = RFNet(
+                in_channels=dim_linear,
+                out_channels=out_channels * in_channels,
+                hidden_channels=hidden_channels,
+                activation_function="ReLU",
+                norm_type=norm_type,
+                dim_linear=dim_linear,
+                bias=bias,
+                omega_0=omega_0,
+                weight_dropout=weight_dropout,
+            )
+        else:
+            self.Kernel = KernelNet(
+                in_channels=dim_linear,
+                out_channels=out_channels * in_channels,
+                hidden_channels=hidden_channels,
+                activation_function=activation_function,
+                norm_type=norm_type,
+                dim_linear=dim_linear,
+                bias=bias,
+                omega_0=omega_0,
+                weight_dropout=weight_dropout,
+            )
 
         if bias:
             self.bias = torch.nn.Parameter(torch.Tensor(out_channels))

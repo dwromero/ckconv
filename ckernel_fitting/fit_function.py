@@ -24,6 +24,7 @@ from ml_collections.config_flags import config_flags
 # project
 import ckconv.nn
 from ckernel_fitting.functions import get_function_to_fit
+from ckconv.utils import num_params
 
 
 FLAGS = flags.FLAGS
@@ -176,6 +177,10 @@ def get_model(config):
     model = torch.nn.DataParallel(model)  # Required for multi-GPU
     model.to(config.device)
     torch.backends.cudnn.benchmark = True
+
+    no_params = num_params(model)
+    print("Number of parameters:", no_params)
+    wandb.run.summary["no_params"] = no_params
 
     return model
 

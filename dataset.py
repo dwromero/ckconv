@@ -31,10 +31,14 @@ def dataset_constructor(
         "SpeechCommands": SpeechCommands,
         "CharTrajectories": CharTrajectories,
         "PhysioNet": PhysioNet,
-        'PennTreeBankChar': PennTreeBankChar,
+        "PennTreeBankChar": PennTreeBankChar,
     }[config.dataset]
-    if config.dataset == 'PennTreeBankChar':
+
+    if config.dataset == "PennTreeBankChar":
         eval_batch_size = 10
+    else:
+        eval_batch_size = config.batch_size
+
     training_set = dataset(
         partition="train",
         seq_length=config.seq_length,
@@ -57,7 +61,12 @@ def dataset_constructor(
         valid_seq_len=config.valid_seq_len,
         batch_size=eval_batch_size,
     )
-    if config.dataset in ["SpeechCommands", "CharTrajectories", "PhysioNet", "PennTreeBankChar"]:
+    if config.dataset in [
+        "SpeechCommands",
+        "CharTrajectories",
+        "PhysioNet",
+        "PennTreeBankChar",
+    ]:
         validation_set = dataset(
             partition="val",
             seq_length=config.seq_length,

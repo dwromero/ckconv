@@ -108,3 +108,7 @@ One can change the frequency of the test set by varying the key `--config.sr_tes
 ###### Data drop percentage = 70%
 
 `run_experiment.py --config.batch_size=32 --config.clip=0 --config.dataset=SpeechCommands --config.device=cuda --config.drop_rate=70 --config.dropout=0.1 --config.dropout_in=0.1 --config.epochs=300 --config.kernelnet_activation_function=Sine --config.kernelnet_no_hidden=32 --config.kernelnet_norm_type=LayerNorm --config.kernelnet_omega_0=23.29255834358289 --config.lr=0.001 --config.mfcc=False --config.model=CKCNN --config.no_blocks=2 --config.no_hidden=30 --config.optimizer=Adam --config.permuted=False --config.sched_decay_factor=5 --config.sched_decay_steps=(75,) --config.sched_patience=20 --config.scheduler=plateau --config.sr_train=1 --config.weight_decay=0 --config.weight_dropout=0.1`
+
+### PhysioNet
+
+`run_experiment.py --config.batch_size=1024 --config.clip=0 --config.dataset=PhysioNet --config.device=cuda --config.dropout=0.1 --config.dropout_in=0.1 --config.epochs=200 --config.kernelnet_activation_function=Sine --config.kernelnet_no_hidden=32 --config.kernelnet_norm_type=LayerNorm --config.kernelnet_omega_0=9.779406396796968 --config.lr=0.001 --config.model=CKCNN --config.no_blocks=2 --config.no_hidden=30 --config.optimizer=Adam --config.permuted=False --config.report_auc=True --config.sched_decay_factor=5 --config.sched_patience=20 --config.scheduler=plateau --config.weight_decay=0.0001 --config.weight_dropout=0`
